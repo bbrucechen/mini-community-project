@@ -1,0 +1,76 @@
+{{extend './_layouts/home.html'}}
+
+{{block 'title'}}{{'多人博客 - 首页'}}{{/block}}
+
+{{block 'body'}}
+<section class="container">
+  <ul class="media-list">
+    {{each topic}}
+    <li class="media">
+      <div class="media-left">
+        <a href="#">
+            <img width="40" height="40" class="media-object" src="../public/img/avatar-default.png" alt="...">
+          </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="/topics/show?id={{$value.id}}">{{$value.title}}</a></h4>
+        <p>sueysok 回复了问题 • 2 人关注 • 1 个回复 • 187 次浏览 • 2017-10-20 13:45</p>
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+      <li class="previous-button">
+        <a href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {{each pageCode}}
+        {{if $value === 1}} 
+        <li class="pageCode active"><a href="JavaScript:;">{{$value}}</a></li>
+        {{else}}
+        <li class="pageCode"><a href="JavaScript:;">{{$value}}</a></li>
+        {{/if}}
+      {{/each}}
+      <li class="next-button">
+        <a href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</section>
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <script>
+    $('.next-button').click(() => {
+      var index = $('.active').index();
+      if(index < $('.pageCode').length) {
+        $('.pagination').children('.pageCode').eq(index).click();
+      }
+    })
+    $('.previous-button').click(() => {
+      var index = $('.active').index() - 2;
+      if(index >= 0) {
+        $('.pagination').children('.pageCode').eq(index).click();
+      }
+    })
+    $('.pageCode').click(function(e) {
+      e.preventDefault;
+      $(this).addClass('active').siblings('.active').removeClass('active');
+      $.ajax({
+        url:'/page/choose',
+        type:'get',
+        data:`num=${$(this).children('a').html()}`,
+        dataType:'json',
+        success:(data) => {
+          $('.media-list').html('');
+          for(let i = 0;i < data.topic.length;i ++) {
+            let li = $(`<li class="media"><div class="media-left"><a href="#"><img width="40" height="40" class="media-object" src="../public/img/avatar-default.png" alt="..."></a></div><div class="media-body"><h4 class="media-heading"><a href="/topics/show?id=${data.topic[i]._id}">${data.topic[i].title}</a></h4><p>sueysok 回复了问题 • 2 人关注 • 1 个回复 • 187 次浏览 • 2017-10-20 13:45</p></div></li>`);
+            $('.media-list').append(li);
+          }    
+        }
+      })
+    })
+  </script>
+{{/block}}

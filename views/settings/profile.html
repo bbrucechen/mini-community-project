@@ -1,0 +1,98 @@
+{{extend '../_layouts/home.html'}}
+
+{{block 'title'}}{{'多人博客 - 首页'}}{{/block}}
+
+{{block 'body'}}
+<section class="container">
+  {{include '../_partials/settings-nav.html'}}
+  <div class="col-md-5">
+    <form id="settingPro">
+      <div class="form-group">
+        <label for="exampleInputEmail1">账号</label>
+        <p class="form-control-static">email@example.com</p>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">昵称</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="" name="nickname" value={{user.nickname}}>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">介绍</label>
+        <textarea class="form-control" rows="3" name="bio" >{{user.bio}}</textarea>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">性别</label>
+        <div>
+          {{if user.gender == 0}}
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio1" value="0" checked> 男
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio2" value="1"> 女
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio3" value="-1"> 保密
+          </label>
+          {{ else if user.gender == 1}}
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio1" value="0" > 男
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio2" value="1" checked> 女
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio3" value="-1"> 保密
+          </label>
+          {{else}}
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio1" value="0" > 男
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio2" value="1" > 女
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="gender" id="inlineRadio3" value="-1" checked> 保密
+          </label>
+          {{/if}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">生日</label>
+        <input type="date" class="form-control" id="exampleInputPassword1" placeholder="" name="birthday" value="2019-11-16">
+      </div>
+      <button type='submit' class="btn btn-success">保存</button>
+    </form>
+  </div>
+  <div class="col-md-2 profile-avatar">
+    <dl>
+      <dt>头像设置</dt>
+      <dd>
+        <img class="avatar" width="150" height="150" src="../public/img/avatar-max-img.png" alt="">
+        <div>
+          <button class="btn btn-default" href="">Upload new picture</button>
+        </div>
+      </dd>
+    </dl>
+  </div>
+</section>
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+
+<script>
+    $("#settingPro").on('submit',function(e){
+        e.preventDefault;
+        var formData = $(this).serialize()
+        $.ajax({
+          url:'/settings/profile',
+          type:'post',
+          data:formData,
+          dataType:'json',
+          success:function(data) {
+            if(data.err_code == 0) {
+              alert('保存成功!');
+            } else {
+              alert('服务器忙，请稍后');
+            }
+          }
+        })
+    })
+</script>
+{{/block}}
